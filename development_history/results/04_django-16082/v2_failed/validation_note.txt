@@ -1,0 +1,16 @@
+Issue: django__django-16082
+
+Attempt 1 result:
+- Generic retrieval surfaced django/db/models/expressions.py as the top source candidate.
+- The model selected expressions.py in Step 1.
+- The model recognized that the issue involved MOD and output_field resolution.
+- The generated edit only added a source-code comment.
+- No executable behavior was changed.
+- The patch applied successfully but did not fix the reported bug.
+
+Classification:
+- Retrieval: successful
+- File localization: successful
+- Problem understanding: partial
+- Functional repair: failed
+- Failure mode: comment-only / non-functional edit

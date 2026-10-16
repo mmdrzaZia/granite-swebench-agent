@@ -1,0 +1,13 @@
+Linkcheck should report HTTP errors instead of Anchor not found
+
+The linkcheck command always reports that it was unable to find the anchor when linkcheck_anchors is True, even when the server replied with an error status code such as 404 or 500.
+
+When checking a URL containing an anchor, if the HTTP request itself returns an error status, linkcheck should report that HTTP error instead of reporting "Anchor not found".
+
+Example:
+
+Actual:
+broken https://google.com/test.txt#test - Anchor 'test' not found
+
+Expected:
+broken https://google.com/test.txt#test - 404 Client Error: Not Found for url: https://google.com/test.txt

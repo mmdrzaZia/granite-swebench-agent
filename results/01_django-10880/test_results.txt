@@ -1,0 +1,72 @@
+Creating test database for alias 'default'…
+Cloning test database for alias 'default'…
+Cloning test database for alias 'default'…
+Testing against Django installed in '/home/mreza/swebench-runs/django-10880/django' with up to 12 processes
+System check identified no issues (0 silenced).
+..........Destroying test database for alias 'default'…
+Destroying test database for alias 'default'…
+Destroying test database for alias 'default'…
+multiprocessing.pool.RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/multiprocessing/pool.py", line 125, in worker
+    result = (True, func(*args, **kwds))
+  File "/home/mreza/swebench-runs/django-10880/django/test/runner.py", line 309, in _run_subsuite
+    result = runner.run(subsuite)
+  File "/home/mreza/swebench-runs/django-10880/django/test/runner.py", line 256, in run
+    test(result)
+  File "/usr/lib/python3.10/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+  File "/usr/lib/python3.10/unittest/suite.py", line 122, in run
+    test(result)
+  File "/home/mreza/swebench-runs/django-10880/django/test/testcases.py", line 271, in __call__
+    super().__call__(result)
+  File "/usr/lib/python3.10/unittest/case.py", line 650, in __call__
+    return self.run(*args, **kwds)
+  File "/usr/lib/python3.10/unittest/case.py", line 599, in run
+    self._feedErrorsToResult(result, outcome.errors)
+  File "/usr/lib/python3.10/unittest/case.py", line 516, in _feedErrorsToResult
+    result.addFailure(test, exc_info)
+  File "/home/mreza/swebench-runs/django-10880/django/test/runner.py", line 202, in addFailure
+    self.check_picklable(test, err)
+  File "/home/mreza/swebench-runs/django-10880/django/test/runner.py", line 130, in check_picklable
+    self._confirm_picklable(err)
+  File "/home/mreza/swebench-runs/django-10880/django/test/runner.py", line 104, in _confirm_picklable
+    pickle.loads(pickle.dumps(obj))
+TypeError: cannot pickle 'traceback' object
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/mreza/swebench-runs/django-10880/tests/runtests.py", line 499, in <module>
+    failures = django_tests(
+  File "/home/mreza/swebench-runs/django-10880/tests/runtests.py", line 288, in django_tests
+    failures = test_runner.run_tests(
+  File "/home/mreza/swebench-runs/django-10880/django/test/runner.py", line 633, in run_tests
+    result = self.run_suite(suite)
+  File "/home/mreza/swebench-runs/django-10880/django/test/runner.py", line 575, in run_suite
+    return runner.run(suite)
+  File "/usr/lib/python3.10/unittest/runner.py", line 184, in run
+    test(result)
+  File "/usr/lib/python3.10/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+  File "/home/mreza/swebench-runs/django-10880/django/test/runner.py", line 373, in run
+    subsuite_index, events = test_results.next(timeout=0.1)
+  File "/usr/lib/python3.10/multiprocessing/pool.py", line 873, in next
+    raise value
+TypeError: cannot pickle 'traceback' object
+
+
+test_count_star (aggregation.tests.AggregateTestCase) failed:
+
+    AssertionError('\'SELECT COUNT(*) \' not found in \'SELECT COUNT( *) AS
+    "n" FROM "aggregation_book"\'')
+
+Unfortunately, tracebacks cannot be pickled, making it impossible for the
+parallel test runner to handle this exception cleanly.
+
+In order to see the traceback, you should install tblib:
+
+    pip install tblib
+

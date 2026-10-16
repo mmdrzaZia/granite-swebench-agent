@@ -1,0 +1,69 @@
+[retrieve] terms kept: ['dependencies', 'listed', 'show_versions', 'template']
+[retrieve]    47.9  sklearn/utils/_show_versions.py  occ:show_versionsx2 occ:dependenciesx1 def:show_versions
+[retrieve]    13.1  sklearn/__init__.py  occ:show_versionsx2 imp:show_versions
+[retrieve]     8.9  sklearn/ensemble/_gb_losses.py  occ:templatex4
+[retrieve]     8.9  sklearn/ensemble/gradient_boosting.py  occ:templatex4
+[retrieve]     8.9  sklearn/externals/_arff.py  occ:templatex3
+[retrieve]     8.9  sklearn/utils/extmath.py  occ:templatex3
+[retrieve]    26.3  sklearn/utils/tests/test_show_versions.py  occ:show_versionsx2 imp:show_versions
+[retrieve]     4.7  sklearn/model_selection/tests/test_split.py  occ:dependenciesx1
+
+CANDIDATE FILES:
+[0] sklearn/utils/_show_versions.py
+[1] sklearn/__init__.py
+[2] sklearn/ensemble/_gb_losses.py
+[3] sklearn/ensemble/gradient_boosting.py
+[4] sklearn/externals/_arff.py
+[5] sklearn/utils/extmath.py
+[6] sklearn/utils/tests/test_show_versions.py
+[7] sklearn/model_selection/tests/test_split.py
+
+===== STEP 1/8  phase=read =====
+[prompt chars: 734]
+MODEL ACTION:
+{
+  "action": "read",
+  "index": 0
+}
+
+READ [0] sklearn/utils/_show_versions.py (2513 chars)
+
+===== STEP 2/8  phase=read =====
+[prompt chars: 3291]
+MODEL ACTION:
+{
+  "action": "read",
+  "index": 6
+}
+
+READ [6] sklearn/utils/tests/test_show_versions.py (834 chars)
+
+===== STEP 3/8  phase=edit =====
+[prompt chars: 4454]
+MODEL ACTION:
+{
+  "analysis": "The bug is that joblib is missing from the list of dependencies displayed by show_versions. According to the issue, joblib should be added to the dependencies listed in show_versions or added to the issue template when sklearn version > 0.20. Since we are only allowed to change source files (not tests), we need to add 'joblib' to the deps list in _get_deps_info function in sklearn/utils/_show_vers",
+  "action": "edit",
+  "index": 0,
+  "old_text": "    deps = [\n        \"pip\",\n        \"setuptools\",\n        \"sklearn\",\n        \"numpy\",\n        \"scipy\",\n        \"Cython\",\n        \"pandas\",\n        \"matplotlib\",\n    ]",
+  "new_text": "    deps = [\n        \"pip\",\n        \"setuptools\",\n        \"sklearn\",\n        \"numpy\",\n        \"scipy\",\n        \"Cython\",\n        \"pandas\",\n        \"matplotlib\",\n        \"joblib\",\n    ]"
+}
+
+SUCCESS: EDIT APPLIED
+
+===== FINAL GIT DIFF =====
+diff --git a/sklearn/utils/_show_versions.py b/sklearn/utils/_show_versions.py
+index e5d3141bf0..ecba9ec68b 100644
+--- a/sklearn/utils/_show_versions.py
++++ b/sklearn/utils/_show_versions.py
+@@ -48,6 +48,7 @@ def _get_deps_info():
+         "Cython",
+         "pandas",
+         "matplotlib",
++        "joblib",
+     ]
+ 
+     def get_version(module):
+
+
+Saved to: /home/mreza/swebench-results/scikit-learn__scikit-learn-14141-granite.patch

@@ -1,0 +1,23 @@
+ImportError while loading conftest '/home/mreza/swebench-runs/sklearn-14141/conftest.py'.
+conftest.py:11: in <module>
+    from sklearn import set_config
+sklearn/__init__.py:75: in <module>
+    from . import __check_build
+sklearn/__check_build/__init__.py:46: in <module>
+    raise_build_error(e)
+sklearn/__check_build/__init__.py:31: in raise_build_error
+    raise ImportError("""%s
+E   ImportError: No module named 'sklearn.__check_build._check_build'
+E   ___________________________________________________________________________
+E   Contents of /home/mreza/swebench-runs/sklearn-14141/sklearn/__check_build:
+E   setup.py                  _check_build.pyx          __pycache__
+E   __init__.py
+E   ___________________________________________________________________________
+E   It seems that scikit-learn has not been built correctly.
+E
+E   If you have installed scikit-learn from source, please do not forget
+E   to build the package before using it: run `python setup.py install` or
+E   `make` in the source directory.
+E
+E   If you have used an installer, please check that it is suited for your
+E   Python version, your operating system and your platform.

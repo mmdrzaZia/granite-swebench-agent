@@ -1,0 +1,28 @@
+Task:
+django__django-10880
+
+Development result:
+Partial / unsuccessful repair candidate
+
+The custom Granite agent identified django/db/models/aggregates.py and
+generated the following change:
+
+    '%(function)s(%(distinct)s%(expressions)s)'
+
+to:
+
+    '%(function)s(%(distinct)s %(expressions)s)'
+
+This addressed the originally reported missing space between DISTINCT
+and the expression.
+
+However, later regression testing with the frozen final agent exposed a
+broader problem with this generic template change: COUNT(*) became
+COUNT( *).
+
+Therefore this development patch should not be considered a complete
+or regression-safe repair.
+
+The off-the-shelf agent experiments preceding the custom agent were not
+retained in detail because they mainly demonstrated tool/action-loop
+failures rather than producing useful repair evidence.

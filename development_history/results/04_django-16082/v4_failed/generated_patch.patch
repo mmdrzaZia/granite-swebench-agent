@@ -1,0 +1,14 @@
+diff --git a/django/db/models/expressions.py b/django/db/models/expressions.py
+index 5e3c7cab82..5bfed224b5 100644
+--- a/django/db/models/expressions.py
++++ b/django/db/models/expressions.py
+@@ -516,6 +516,9 @@ _connector_combinations = [
+             # Behavior for DIV with integer arguments follows Postgres/SQLite,
+             # not MySQL/Oracle.
+             Combinable.DIV,
++            # MOD should promote Integer to Decimal when one operand is Decimal
++            (fields.DecimalField, fields.IntegerField, fields.DecimalField),
++            (fields.IntegerField, fields.DecimalField, fields.DecimalField),
+             Combinable.MOD,
+             Combinable.POW,
+         )

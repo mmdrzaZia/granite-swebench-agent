@@ -1,0 +1,73 @@
+[retrieve] terms kept: ['Django', 'clear', 'delete', 'deletion', 'dependencies', 'instances', 'update', 'updates']
+[retrieve]    62.3  django/db/models/query.py  occ:deletex8 occ:Djangox3 occ:instancesx21 occ:deletionx2 occ:updatesx3 occ:updatex19
+[retrieve]    48.6  django/db/models/base.py  occ:deletex3 occ:Djangox3 occ:instancesx3 occ:deletionx1 occ:updatex14 occ:clearx3
+[retrieve]    47.3  django/db/models/deletion.py  occ:deletex5 occ:dependenciesx6 occ:instancesx28 occ:deletionx2 occ:updatex5 def:delete
+[retrieve]    46.5  django/contrib/auth/models.py  occ:deletex2 occ:Djangox7 occ:dependenciesx1 occ:instancesx1 occ:updatesx1 occ:updatex2
+[retrieve]    45.1  django/contrib/admin/options.py  occ:deletex17 occ:Djangox3 occ:instancesx2 occ:deletionx4 occ:updatex8 occ:clearx1
+[retrieve]    38.3  django/contrib/sessions/backends/base.py  occ:deletex4 occ:Djangox2 occ:updatex4 occ:clearx2 def:delete
+[retrieve]    48.5  tests/admin_views/tests.py  occ:deletex40 occ:Djangox7 occ:instancesx3 occ:deletionx11 occ:updatex3 occ:clearx3
+[retrieve]    44.6  tests/multiple_database/tests.py  occ:deletex25 occ:Djangox57 occ:instancesx2 occ:deletionx1 occ:updatex8 occ:clearx18
+[retrieve]    42.2  tests/cache/tests.py  occ:deletex12 occ:Djangox1 occ:instancesx1 occ:deletionx1 occ:updatesx1 occ:updatex3
+
+CANDIDATE FILES:
+[0] django/db/models/query.py
+[1] django/db/models/base.py
+[2] django/db/models/deletion.py
+[3] django/contrib/auth/models.py
+[4] django/contrib/admin/options.py
+[5] django/contrib/sessions/backends/base.py
+[6] tests/admin_views/tests.py
+[7] tests/multiple_database/tests.py
+[8] tests/cache/tests.py
+
+===== STEP 1/8  phase=read =====
+[prompt chars: 868]
+MODEL ACTION:
+{
+  "action": "read",
+  "index": 2
+}
+
+READ [2] django/db/models/deletion.py (6403 chars)
+
+===== STEP 2/8  phase=read =====
+[prompt chars: 7312]
+MODEL ACTION:
+{
+  "action": "read",
+  "index": 0
+}
+
+READ [0] django/db/models/query.py (6288 chars)
+
+===== STEP 3/8  phase=edit =====
+[prompt chars: 13913]
+MODEL ACTION:
+{
+  "analysis": "The bug is described as: delete() on instances of models without any dependencies doesn't clear PKs. It should set the PK to None after .delete() call. The issue references Django.db.models.deletion lines 276-281 and says \"Should update the model line 280.\" Looking at deletion.py, we see in the delete method (line 262) there is an optimization for single object with no dependencies (fast_delete). ",
+  "action": "edit",
+  "index": 2,
+  "old_text": "        # Optimize for the case with a single obj and no dependencies\n        if len(self.data) == 1 and len(instances) == 1:\n            instance = list(instances)[0]\n            if self.can_fast_delete(instance):\n                with transaction.mark_for_rollback_on_error():\n                    count = sql.DeleteQuery(model).delete_batch([instance.pk], self.using)\n                return count, {model._meta.label: count}",
+  "new_text": "        # Optimize for the case with a single obj and no dependencies\n        if len(self.data) == 1 and len(instances) == 1:\n            instance = list(instances)[0]\n            if self.can_fast_delete(instance):\n                with transaction.mark_for_rollback_on_error():\n                    count = sql.DeleteQuery(model).delete_batch([instance.pk], self.using)\n                    # After deletion, set the PK to None for the instance.\n                    if hasattr(instance, 'pk') and instance.pk is not None:\n                        setattr(instance, 'pk', None)\n                return count, {model._meta.label: count}"
+}
+
+SUCCESS: EDIT APPLIED
+
+===== FINAL GIT DIFF =====
+diff --git a/django/db/models/deletion.py b/django/db/models/deletion.py
+index 92fe4affb9..4f8a8e6606 100644
+--- a/django/db/models/deletion.py
++++ b/django/db/models/deletion.py
+@@ -277,6 +277,9 @@ class Collector:
+             if self.can_fast_delete(instance):
+                 with transaction.mark_for_rollback_on_error():
+                     count = sql.DeleteQuery(model).delete_batch([instance.pk], self.using)
++                    # After deletion, set the PK to None for the instance.
++                    if hasattr(instance, 'pk') and instance.pk is not None:
++                        setattr(instance, 'pk', None)
+                 return count, {model._meta.label: count}
+ 
+         with transaction.atomic(using=self.using, savepoint=False):
+
+
+Saved to: /home/mreza/swebench-results/django__django-11179-granite-v2.patch

@@ -1,0 +1,20 @@
+Issue: django__django-11179
+
+Run: v1 / failed
+
+Agent result:
+- Generic retrieval successfully surfaced django/db/models/deletion.py.
+- The model selected deletion.py in Step 1.
+- The model selected django/db/models/query.py in Step 2.
+- The relevant code region required for the fix was not included in the bounded file excerpt.
+- The model therefore attempted edits using old_text that was not present in the actual file.
+- The validator correctly rejected those edits.
+- On Step 5, the model returned malformed/incomplete JSON and the run terminated with JSONDecodeError.
+- No valid patch was produced.
+
+Classification:
+- Retrieval: successful
+- File localization: successful
+- Repair: failed
+- Patch produced: no
+- Main observed limitation: bounded source excerpt did not expose the relevant code region.

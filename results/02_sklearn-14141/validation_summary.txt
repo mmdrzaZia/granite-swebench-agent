@@ -1,0 +1,63 @@
+Task:
+scikit-learn__scikit-learn-14141
+
+Final evaluation agent:
+granite_swe_agent_FINAL.py
+
+Base commit:
+3d997697fdd166eff428ea9fd35734b6a8ba113e
+
+FINAL RESULT:
+PASS
+
+Previous development result:
+PASS
+
+Issue:
+The task required joblib to be included in the dependency information
+reported by sklearn/utils/_show_versions.py.
+
+Earlier development result:
+The development agent correctly localized sklearn/utils/_show_versions.py
+and identified that joblib was missing from the dependency list used by
+_get_deps_info().
+
+The resulting development repair added:
+
+    "joblib",
+
+to that list and was considered a successful repair candidate.
+
+Final frozen run:
+The final frozen agent reproduced the same repair. It again localized
+the correct source file and added joblib to the dependency list used by
+_get_deps_info().
+
+Validation:
+The historical scikit-learn checkout could not run the directly relevant
+pytest module because the compiled scikit-learn extension
+sklearn.__check_build._check_build had not been built.
+
+This failure occurred during package import before the relevant test
+logic executed, so it was treated as an environment/build limitation
+rather than evidence that the patch was incorrect.
+
+To validate the repair independently of the full package build, the
+modified sklearn/utils/_show_versions.py module was loaded directly and
+_get_deps_info() was executed.
+
+Observed result:
+
+    joblib present = True
+    DIRECT VALIDATION: PASS
+
+Assessment:
+The requested dependency was present in the function output, and the
+direct validation completed successfully.
+
+Final classification:
+PASS — the final frozen agent reproduced the successful development
+repair and direct functional validation confirmed the requested
+behaviour.
+
+Official SWE-bench harness was not run.

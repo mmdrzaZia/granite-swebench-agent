@@ -1,0 +1,5 @@
+TASK=django__django-11179
+FINAL_AGENT_RESULT=FAIL
+PREVIOUS_DEVELOPMENT_RESULT=PASS
+SYNTAX=PASS
+REASON=Duplicate delete_batch call and reasoning/comment pollution in final-agent patch

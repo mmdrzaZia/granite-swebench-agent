@@ -1,0 +1,53 @@
+Task:
+django__django-11179
+
+Final evaluation agent:
+granite_swe_agent_FINAL.py
+
+Base commit:
+19fc6376ce67d01ca37a91ef2f55ef769f50513a
+
+FINAL RESULT:
+FAIL
+
+Previous development result:
+PASS / successful repair candidate
+
+Issue:
+Django's fast-delete path could delete an object without clearing the
+primary key of the in-memory instance.
+
+Development comparison:
+An earlier agent version produced a small repair that cleared the
+instance primary key after the delete operation.
+
+The final frozen agent again localized django/db/models/deletion.py, but
+its generated patch was substantially worse.
+
+Final-agent failure:
+The patch performs delete_batch() once through a newly introduced
+DeleteQuery object and then performs the original delete_batch() call
+again.
+
+This means the same database deletion is attempted twice. The second
+delete may also return an incorrect affected-row count.
+
+The patch additionally inserted a large amount of speculative reasoning
+as source-code comments.
+
+Why the final run regressed:
+The final agent used an ineffective "line 280" inspect request, then
+entered edit generation with poor context. A JSON retry produced a
+non-minimal patch containing both duplicated executable logic and
+reasoning comments.
+
+Validation:
+The generated source was syntactically valid, but the duplicate database
+operation is sufficient to classify the repair as functionally invalid.
+
+Final classification:
+FAIL — duplicate delete operation and non-minimal polluted patch.
+
+This is a regression relative to the earlier successful development run.
+
+Official SWE-bench harness was not run.

@@ -1,0 +1,44 @@
+Issue: sympy__sympy-16886
+Agent: granite_swe_agent_v4
+
+Issue summary:
+The Morse-code mapping for the digit "1" was incorrect.
+The repository contained:
+
+    "----": "1"
+
+The issue states that the correct Morse encoding is:
+
+    ".----": "1"
+
+Agent behavior:
+- Generic retrieval ranked sympy/crypto/crypto.py first.
+- The agent read the correct source file.
+- During adaptive inspection, the model repeatedly attempted to inspect a descriptive query related to the Morse mapping.
+- These targeted inspections were not especially useful because the query was not an exact code identifier.
+- Despite this, the initial source context was sufficient for the model to identify the incorrect dictionary entry.
+- The strict edit stage produced a complete old_text/new_text replacement.
+
+Generated repair:
+The agent changed:
+
+    "-----": "0", "----": "1",
+
+to:
+
+    "-----": "0", ".----": "1",
+
+Assessment:
+- Retrieval: successful
+- File localization: successful
+- Issue understanding: successful
+- Patch generation: successful
+- Generated change matches the requested correction in the issue statement.
+- Python syntax remained valid.
+- Official SWE-bench harness was not run.
+
+Classification:
+Successful repair candidate / manually verified against the issue statement.
+
+Important methodological note:
+No SymPy-specific rule, Morse-specific rule, target filename, or reference-patch location was added to the agent before this run. The same generic v4 agent architecture developed during earlier tasks was used unchanged.

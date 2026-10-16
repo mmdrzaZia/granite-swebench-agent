@@ -1,0 +1,57 @@
+Task:
+sympy__sympy-13757
+
+Final evaluation agent:
+granite_swe_agent_FINAL.py
+
+Base commit:
+a5e6a101869e027e7930e694f8b1cfb082603453
+
+FINAL RESULT:
+FAIL
+
+Previous development result:
+FAIL
+
+Issue:
+Multiplication involving a SymPy Poly behaved asymmetrically depending on
+whether the Poly appeared on the left or right side.
+
+Final-agent patch:
+The agent changed the __rmul__ fallback from:
+
+    return g*f.as_expr()
+
+to:
+
+    return f.as_expr()*g
+
+The patch was syntactically valid and applied successfully.
+
+Functional validation:
+The historical checkout required Python 3.8.20.
+
+Observed behaviour:
+
+    Poly(x, x) * x
+        -> Poly(x**2, x, domain='ZZ')
+
+    x * Poly(x, x)
+        -> x*Poly(x, x, domain='ZZ')
+
+The resulting objects were different types and:
+
+    equality = False
+
+Assessment:
+The patch changed operand order but did not resolve the underlying
+evaluation/dispatch behaviour.
+
+Final classification:
+FAIL — valid patch, but the required semantic behaviour remained
+unchanged.
+
+This is essentially the same functional failure as the earlier
+development run.
+
+Official SWE-bench harness was not run.

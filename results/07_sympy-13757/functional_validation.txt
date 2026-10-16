@@ -1,0 +1,25 @@
+/home/mreza/swebench-runs/sympy-13757/sympy/core/basic.py:3: DeprecationWarning: Using or importing the ABCs from 'collections' instead of from 'collections.abc' is deprecated since Python 3.3, and in 3.10 it will stop working
+  from collections import Mapping, defaultdict
+/home/mreza/swebench-runs/sympy-13757/sympy/core/containers.py:271: DeprecationWarning: Using or importing the ABCs from 'collections' instead of from 'collections.abc' is deprecated since Python 3.3, and in 3.10 it will stop working
+  class OrderedSet(collections.MutableSet):
+/home/mreza/swebench-runs/sympy-13757/sympy/plotting/plot.py:28: DeprecationWarning: Using or importing the ABCs from 'collections' instead of from 'collections.abc' is deprecated since Python 3.3, and in 3.10 it will stop working
+  from collections import Callable
+Poly * expr:
+Poly(x**2, x, domain='ZZ')
+
+expr * Poly:
+x*Poly(x, x, domain='ZZ')
+
+types:
+<class 'sympy.polys.polytools.Poly'>
+<class 'sympy.core.mul.Mul'>
+
+equality:
+False
+
+repr:
+left  = Poly(x**2, x, domain='ZZ')
+right = x*Poly(x, x, domain='ZZ')
+Traceback (most recent call last):
+  File "<stdin>", line 26, in <module>
+AssertionError: FAIL: left- and right-side multiplication are still semantically different

@@ -1,0 +1,16 @@
+Issue: scikit-learn__scikit-learn-14141
+
+Agent result:
+- Relevant source file retrieved automatically.
+- Agent selected sklearn/utils/_show_versions.py.
+- Agent also read the related test file.
+- Agent generated and applied a one-line edit adding joblib to the dependency list.
+- Static sanity check confirmed that "joblib" is present after the edit.
+
+Runtime import check:
+- Not completed because this source checkout of scikit-learn had not been built.
+- Importing sklearn failed at sklearn.__check_build._check_build before the edited function could be executed.
+- This is an environment/build limitation, not an observed failure of the generated patch.
+
+Official SWE-bench harness:
+- Not run.

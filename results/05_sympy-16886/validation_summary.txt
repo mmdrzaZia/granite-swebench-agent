@@ -1,0 +1,46 @@
+Task:
+sympy__sympy-16886
+
+Final evaluation agent:
+granite_swe_agent_FINAL.py
+
+Base commit:
+c50643a49811e9fe2f4851adff4313ad46f7325e
+
+FINAL RESULT:
+FAIL
+
+Previous development result:
+PASS / successful repair candidate
+
+Issue:
+The Morse-code mapping for digit 1 was incorrect:
+
+    "----": "1"
+
+The correct mapping is:
+
+    ".----": "1"
+
+Development comparison:
+An earlier development version correctly produced this minimal repair.
+
+Final frozen run:
+The final agent again localized sympy/crypto/crypto.py and correctly
+diagnosed the required change.
+
+However, strict edit generation repeatedly produced malformed replacement
+text. The syntax validator correctly rejected each invalid edit.
+
+The agent then repeated the same edit pattern until the action limit was
+reached.
+
+No valid patch was applied.
+
+Final classification:
+FAIL — correct localization and diagnosis, but edit-generation/control
+regression prevented a valid repair.
+
+This is a regression relative to the earlier successful development run.
+
+Official SWE-bench harness was not run.

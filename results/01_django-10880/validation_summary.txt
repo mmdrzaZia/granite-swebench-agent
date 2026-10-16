@@ -1,0 +1,42 @@
+Task:
+django__django-10880
+
+Final evaluation agent:
+granite_swe_agent_FINAL.py
+
+Base commit:
+838e432e3e5519c5383d12018e6c78f8ec7833c1
+
+FINAL RESULT:
+FAIL
+
+Issue:
+The task concerned malformed SQL generation for an aggregate using
+distinct=True with a Case expression.
+
+Final-agent patch:
+The agent changed the aggregate template from:
+
+    '%(function)s(%(distinct)s%(expressions)s)'
+
+to:
+
+    '%(function)s(%(distinct)s %(expressions)s)'
+
+Assessment:
+The change addressed the reported missing-space symptom, but it modified
+spacing for all aggregates rather than only the affected case.
+
+Validation:
+Relevant Django aggregation tests exposed a regression:
+
+    expected: COUNT(*)
+    generated: COUNT( *)
+
+The additional traceback-pickling error came from Django's parallel test
+runner while reporting the failure and was not the root cause.
+
+Final classification:
+FAIL — the patch introduced a functional regression.
+
+Official SWE-bench harness was not run.

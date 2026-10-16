@@ -1,0 +1,73 @@
+Issue: sympy__sympy-13757
+Agent: granite_swe_agent_v4
+
+Issue summary:
+Multiplication involving Poly behaves asymmetrically when a SymPy expression
+appears on the left side.
+
+Examples from the issue:
+- Poly(x) * x evaluates.
+- x * Poly(x) remains unevaluated.
+- -2 * Poly(x) evaluates.
+- S(-2) * Poly(x) remains unevaluated.
+
+Agent behaviour:
+- Generic retrieval ranked sympy/polys/polytools.py first.
+- The agent read the Poly implementation.
+- The model inspected __mul__ and then __rmul__.
+- It repeatedly inspected __rmul__ several times instead of exploring a
+  different symbol, file, or broader repository location.
+- After exhausting the information-gathering budget, it generated an edit
+  inside Poly.__rmul__.
+
+Generated patch:
+The model changed:
+
+    return g*f.as_expr()
+
+to:
+
+    return f*g  # Note: order matters; we want expression * Poly? Actually we need to evaluate.
+
+Why the repair failed:
+- The model did not establish that Poly.__rmul__ was the true root cause.
+- The replacement simply changes the fallback multiplication direction and
+  may recreate the same dispatch behaviour rather than resolving it.
+- The model inserted intermediate reasoning directly into the source code as
+  a comment.
+- The patch therefore does not provide a reliable functional repair.
+
+Important validator note:
+The comment-only validator worked as intended. This patch was not
+comment-only because it also changed executable code. The failure was
+different: the model generated an incorrect executable edit and polluted
+the source with a reasoning comment.
+
+Observed agent limitation:
+The same inspection was repeated multiple times:
+
+    inspect __rmul__
+    inspect __rmul__
+    inspect __rmul__
+
+These repeated inspections consumed the available information-gathering
+budget without adding new evidence.
+
+Assessment:
+- Initial retrieval: partially successful
+- Poly implementation localization: successful
+- Relevant multiplication methods inspected: successful
+- Root-cause localization: insufficient
+- Model reasoning: unsuccessful
+- Final repair: unsuccessful
+- Official SWE-bench harness: not run
+
+Failure classification:
+Combined agent-exploration and model-reasoning failure.
+
+The agent allowed repeated identical inspections to consume the exploration
+budget, while the model then generated an incorrect fallback edit instead
+of establishing the actual multiplication-dispatch root cause.
+
+Final classification:
+Unsuccessful repair.

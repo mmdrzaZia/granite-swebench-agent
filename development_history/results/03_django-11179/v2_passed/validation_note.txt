@@ -1,0 +1,30 @@
+Issue: django__django-11179
+
+Run: successful after generic agent improvement
+
+Initial failure:
+- The agent localized django/db/models/deletion.py correctly.
+- The bounded source excerpt did not include the relevant code region referenced by the issue.
+- The model therefore attempted invalid edits using invented old_text.
+- The run later terminated with malformed JSON.
+
+Generic improvement:
+- The file-reading strategy was updated to parse line numbers/ranges explicitly mentioned in the original problem statement.
+- When present, the referenced region is included in the source excerpt.
+- No repository-specific filename, line, root cause, or solution was hard-coded.
+- The change is generic and can apply to any SWE-bench issue whose original statement references source line numbers.
+
+Successful run:
+- Retrieval surfaced django/db/models/deletion.py.
+- The model selected deletion.py in Step 1.
+- The enlarged/line-aware excerpt exposed the relevant fast-delete code.
+- The model produced an edit that was successfully applied.
+- The generated patch clears the deleted instance's primary key in the fast-delete path.
+
+Classification:
+- Retrieval: successful
+- File localization: successful
+- Code-region localization: successful after generic improvement
+- Patch generation: successful
+- Patch applied: yes
+- Official SWE-bench harness: not run

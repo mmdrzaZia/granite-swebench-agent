@@ -1,0 +1,49 @@
+Issue: django__django-16082
+Run: granite_swe_agent_v4 adaptive2
+
+What changed in this agent version:
+- The agent was changed from a fixed read-then-edit workflow to an adaptive workflow.
+- After the initial repository read, the model could choose among:
+  1. reading another candidate file,
+  2. inspecting a specific symbol/identifier,
+  3. generating an edit.
+- Targeted inspection was generic and driven by symbols selected by the model itself.
+- No Django-specific function, file, MOD-specific fix, or reference-patch location was hard-coded.
+- A two-stage edit protocol was added:
+  - the first model call decides whether to read, inspect, or edit;
+  - if it chooses edit, a second strict-schema call requires a complete edit containing old_text and new_text.
+- Existing generic safeguards were retained, including:
+  - comment-only edit rejection,
+  - short/code-like issue-term preservation such as MOD,
+  - bounded repository context,
+  - JSON retry handling.
+
+What happened in this run:
+- Retrieval correctly ranked django/db/models/expressions.py first.
+- The model independently inspected the following chain:
+    _resolve_combined_type
+    -> _connector_combinators
+    -> _connector_combinations
+- This was a substantial improvement over earlier runs because the model reached the relevant type-resolution registry without manually supplied file/line hints.
+- The strict edit stage successfully produced both old_text and new_text.
+
+Why the repair still failed:
+- The model identified the correct general area but misunderstood the structure of the nested connector/type mapping.
+- It inserted field-type tuples:
+    (DecimalField, IntegerField, DecimalField)
+    (IntegerField, DecimalField, DecimalField)
+  inside the tuple that enumerates arithmetic connectors.
+- That location expects connector constants such as ADD, SUB, MUL, DIV, MOD, and POW, not field-type mapping tuples.
+- Therefore the patch was structurally incorrect even though localization and reasoning were significantly better than in earlier attempts.
+
+Classification:
+- Retrieval: successful
+- File localization: successful
+- Symbol tracing: successful
+- Relevant subsystem identification: successful
+- Patch generation protocol: successful
+- Functional repair: failed
+- Failure mode: structural misunderstanding of a nested registration/data-table pattern by the local 8B model
+
+Interpretation:
+This run suggests that the remaining failure was primarily a model reasoning/code-structure limitation rather than a repository retrieval failure. The agent successfully navigated to the relevant implementation region, but the model placed the intended type-mapping information in the wrong structural level of the registry.
